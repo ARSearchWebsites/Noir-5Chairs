@@ -12,9 +12,9 @@
       "paths": { "@/*": ["*"] }, // example alias
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
-      "types": []
     },
-    "include": ["src"],
+    "include": ["src","src/types"
+  ],
     "exclude": ["node_modules", "dist"]
   }
   

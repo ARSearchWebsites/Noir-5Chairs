@@ -8,6 +8,7 @@ import SecondHeader from "../Components/SecondHeader";
 import { doc, setDoc, arrayUnion } from "@firebase/firestore";
 import { db } from "../services/firebase";
 import { Product, TimeData } from "../types/types";
+import ARViewer from "../Components/ARViewer";
 
 
 /* ------------------------------------------------------------------ */
@@ -172,18 +173,11 @@ const SingleProduct: React.FC = () => {
         {mode === "2" ? (
           <Videosection product={product} />
         ) : (
-          <>
-            {/* View-in-AR button (delivers user activation) */}
-            <div className="flex justify-center">
-              <button
-                onClick={handleViewInSpace}
-                className="mt-6 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-              >
-                View in your space
-              </button>
-            </div>
-
-          </>
+          <ARViewer
+            modelSrc={`/Users/genai_inkubator/Desktop/Deutsche Sporthochschule/Noir-5Chairs/3Dimage1_atlas.glb`}               // adjust path if needed
+            productName={product.product_name}
+            autoLaunch={true}                             // true if you *really* want auto-launch
+          />
         )}
       </div>
 
