@@ -131,15 +131,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
         }
       })}
       
-      {/* Optional controls */}
-      <div className="model-viewer-controls">
-        <button onClick={resetCamera} className="control-button">
-          Reset Camera
-        </button>
-        <button onClick={() => console.log(getCameraPosition())} className="control-button">
-          Log Camera Position
-        </button>
-      </div>
+      
     </div>
   );
 };

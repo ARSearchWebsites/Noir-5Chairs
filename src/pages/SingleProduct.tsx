@@ -182,6 +182,7 @@ const SingleProduct: React.FC = () => {
           alt="3D model of an office chair"
           ar={true}
           arModes="webxr scene-viewer quick-look"
+          ar-scale="auto"
           cameraControls={true}
           autoRotate={true}
     />
