@@ -1,21 +1,24 @@
-import React, { useRef, useEffect } from "react";
-import ModelViewer from "./ModelViwer";
+import React from 'react';
 
-interface Props {
-  sku: string;
+interface ProductWithSrc {
+  src: string;
 }
 
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-export const VideoSection: React.FC<Props> = ({ sku }) => (
+interface VideoSectionProps {
+  product: ProductWithSrc;
+}
+
+const VideoSection: React.FC<VideoSectionProps> = ({ product }) => (
   <section className="mt-8 flex justify-center">
-    <ModelViewer
-      id="ar-model"
-      src="3Dimage1_atlas.glb"
-      alt="3D model of an office chair"
-      ar={true}
-      arModes="scene-viewer quick-look"
-      cameraControls={true}
-      autoRotate={true}
+    <iframe
+      title="3D Model"
+      src={product.src}
+      allow="autoplay; fullscreen; xr-spatial-tracking"
+      allowFullScreen
+      className="w-[300px] h-[250px] sm:w-[800px] sm:h-[480px]"
+      frameBorder={0}
     />
   </section>
 );
+
+export default VideoSection;

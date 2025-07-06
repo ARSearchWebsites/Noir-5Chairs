@@ -24,7 +24,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
   src,
   alt = "3D model of an office chair",
   ar = true,
-  arModes = "scene-viewer quick-look",
+  arModes = "webxr scene-viewer quick-look",
   cameraControls = true,
   autoRotate = true,
   poster,
