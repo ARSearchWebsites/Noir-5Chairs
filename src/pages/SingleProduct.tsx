@@ -184,7 +184,7 @@ const SingleProduct: React.FC = () => {
               </button>
               */}
                 <iframe
-                src={`https://ar-chair-viewer-six.vercel.app/?model=${encodeURIComponent(product.sku)}`}
+                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
                 title="AR Chair Viewer"
                 allow="xr-spatial-tracking; camera; microphone; fullscreen"
                 allowFullScreen
