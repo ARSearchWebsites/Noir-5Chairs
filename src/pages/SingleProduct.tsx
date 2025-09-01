@@ -174,7 +174,7 @@ const SingleProduct: React.FC = () => {
         ) : (
           <>
             {/* View-in-AR button (delivers user activation) */}
-            <div className="flex justify-center w-full h-[750px]">
+            <div className="flex justify-center w-full">
                {/* 
               <button
                 onClick={handleViewInSpace}
@@ -190,7 +190,7 @@ const SingleProduct: React.FC = () => {
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
                 loading="lazy"
-                className="w-[350px]"
+                //className="w-[350px]"
             />
             </div>
 

@@ -50,7 +50,7 @@ const product_card: readonly Product[] = [
     currency: "EURO",
     thumb: "./images/image5_acadia.png",
     sku: "3Dimage4_acadia",
-    src: "https://sketchfab.com/models/cee12c29ebda4bcdb91b84a6f126a971/embed",
+    src: "https://sketchfab.com/models/976e7673eff24fb7b8bd41d23145f03d/embed",
   },
   {
     id: 5,
