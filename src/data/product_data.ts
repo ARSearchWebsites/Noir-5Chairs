@@ -20,7 +20,7 @@ const product_card: readonly Product[] = [
     currency: "EURO",
     thumb: "./images/image2_atlas.png",
     sku: "3Dimage1_atlas",
-    src: "https://sketchfab.com/models/cee12c29ebda4bcdb91b84a6f126a971/embed",
+    src: "https://sketchfab.com/models/2bdbfaf695c04dd998a9de0ee41be9da/embed",
   },
   {
     id: 2,
@@ -40,7 +40,7 @@ const product_card: readonly Product[] = [
     currency: "EURO",
     thumb: "./images/image4_andes.png",
     sku: "3Dimage3_andes",
-    src: "https://sketchfab.com/models/2206e982ea5f40b5be49390308de2db3/embed",
+    src: "https://sketchfab.com/models/6aef8b2c673a41ad8698f0b8689a09a3/embed",
   },
   {
     id: 4,
