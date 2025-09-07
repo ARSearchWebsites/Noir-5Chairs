@@ -30,7 +30,7 @@ const product_card: readonly Product[] = [
     currency: "EURO",
     thumb: "./images/image3_sierra.png",
     sku: "3Dimage2_sierra",
-    src: "https://sketchfab.com/models/8541b1ebf4ff4fcbb14aabbe721e6e3b/embed",
+    src: "https://sketchfab.com/models/3e0d5699f1cf45fc9d43bb56d8d8cf1c/embed",
   },
   {
     id: 3,
