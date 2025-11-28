@@ -174,24 +174,18 @@ const SingleProduct: React.FC = () => {
         ) : (
           <>
             {/* View-in-AR button (delivers user activation) */}
-            <div className="flex justify-center w-full">
-               {/* 
+            <div className="flex flex-col items-center w-full gap-4">
+              {/* 1) AR LAUNCH BUTTON – TOP LEVEL */}
               <button
                 onClick={handleViewInSpace}
                 className="mt-6 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
               >
                 View in your space
               </button>
-              */}
-                <iframe
-                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
-                title="AR Chair Viewer"
-                allow="xr-spatial-tracking; camera; microphone; fullscreen"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                loading="lazy"
-                //className="w-[350px]"
-            />
+
+              {/* 2) OPTIONAL: 3D PREVIEW IFRAME (NO AR LAUNCH FROM HERE) */}
+              {/* You can keep this as a visual preview only, or remove it entirely */}
+              {/* Iframe removed as requested */}
             </div>
 
           </>
