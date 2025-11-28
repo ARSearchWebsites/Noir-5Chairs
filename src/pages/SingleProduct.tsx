@@ -183,9 +183,15 @@ const SingleProduct: React.FC = () => {
                 View in your space
               </button>
 
-              {/* 2) OPTIONAL: 3D PREVIEW IFRAME (NO AR LAUNCH FROM HERE) */}
-              {/* You can keep this as a visual preview only, or remove it entirely */}
-              {/* Iframe removed as requested */}
+              <iframe
+                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
+                title="AR Chair Viewer"
+                allow="xr-spatial-tracking; camera; microphone; fullscreen"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                loading="lazy"
+                //className="w-[350px]"
+              />
             </div>
 
           </>
