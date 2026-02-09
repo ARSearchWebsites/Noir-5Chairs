@@ -69,8 +69,8 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({
         className="md:mr-20 flex items-center gap-1 text-primary-blue"
         onClick={() => handleClick(productName || 'Product')}
       >
-        <BsCartCheckFill size={35} className="mt-2" />
-        <h3 className="pt-2 text-[1.2rem] md:text-[1.5rem] font-bold">Buy {productName} Now</h3>
+        <BsCartCheckFill size={26} className="" />
+        <h3 className="text-[1rem] md:text-[1.2rem] sm:text-[12px] font-bold">Buy {productName} Now</h3>
       </NavLink>
     </header>
   );

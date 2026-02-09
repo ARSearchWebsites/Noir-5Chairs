@@ -7,8 +7,9 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import { doc, setDoc, arrayUnion } from '@firebase/firestore';
 import { db } from '../services/firebase';
 import { Product } from '../types/types';
+import { useMediaQuery } from 'react-responsive';
 
-const MoreinfoNegative: React.FC = () => {
+const MoreinfoPositive: React.FC = () => {
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: window.location.href, title: 'MoreInfo Page' });
   }, []);
@@ -55,8 +56,8 @@ const MoreinfoNegative: React.FC = () => {
         />
       </div>
 
-      <main id="top" className="mt-20 px-4 flex flex-col items-center text-center pt-10">
-        <h1 className="text-primary-blue text-[3rem] font-black my-4 mt-8">Product Details</h1>
+      <main id="top" className="mt-20 px-10 mb-10 flex flex-col items-center text-center">
+        <h1 className="text-primary-blue text-[32px] font-bold my-8">Product Details</h1>
 
         <FeatureBlock
           title="Material: Plastic"
@@ -96,20 +97,32 @@ const MoreinfoNegative: React.FC = () => {
   );
 };
 
-export default MoreinfoNegative;
+export default MoreinfoPositive;
 
 interface FeatureProps { title: string; open: boolean; toggle: () => void; children: React.ReactNode; }
 
-const FeatureBlock: React.FC<FeatureProps> = ({ title, open, toggle, children }) => (
-  <div className="p-4">
-    <h2
-      className="text-primary-blue text-[2.5rem] font-semibold flex items-center justify-center gap-2 cursor-pointer"
-      onClick={toggle}
-    >
-      {title} {open ? <AiOutlineUp size={25} /> : <AiOutlineDown size={25} />}
-    </h2>
-    <p className={`${open ? 'block' : 'hidden'} text-black max-w-2xl mx-auto mt-2 text-[20px]`}>
-      {children}
-    </p>
-  </div>
-);
+const FeatureBlock: React.FC<FeatureProps> = ({ title, open, toggle, children }) => {
+  return (
+    <div className="w-full max-w-2xl py-4">
+      <button
+        type="button"
+        onClick={toggle}
+        className="w-full flex items-start justify-between gap-4 text-left text-primary-blue text-xl font-semibold"
+      >
+        {/* Title grows naturally */}
+        <span className="flex-1 text-center leading-snug">
+          {title}
+        </span>
+
+        {/* Fixed icon container */}
+        <span className="shrink-0 pt-1">
+          {open ? <AiOutlineUp size={22} /> : <AiOutlineDown size={22} />}
+        </span>
+      </button>
+
+      <p className={`${open ? 'block mt-3' : 'hidden'} text-black text-lg`}>
+        {children}
+      </p>
+    </div>
+  );
+};

@@ -16,6 +16,7 @@ import Login from "./pages/login";
 import ReactGA from "react-ga4";
 import Model3D from "./Components/Model3D";
 import { CookiesProvider } from "react-cookie";
+import ThreeDViewerPage from "./pages/ThreeDviewer";
 
 const TRACKING_ID = "G-G7L7Q28LTL";
 ReactGA.initialize(TRACKING_ID);
@@ -72,6 +73,7 @@ const App = () => {
             <Route path="/3dmodel" element={<Model3D product={1} />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/product" element={<SingleProduct />} />
+            <Route path="/3dviewer" element={<ThreeDViewerPage />} />
             <Route path="/product/moreinfo" element={<DynamicMoreinfo userId={userId} />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>

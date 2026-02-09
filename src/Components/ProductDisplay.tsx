@@ -45,8 +45,8 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   useEffect(() => window.scrollTo(0, 0), []);
 
   return (
-    <section className="relative items-center p-2.5 mt-2.5 mr-2.5 flex flex-col justify-around ">
-      <h2 className="mb-4 text-center font-bold underline decoration-4 decoration-primary-blue text-[44px] text-primary-blue">
+    <section className="relative items-center p-2.5 mr-2.5 flex flex-col justify-around ">
+      <h2 className="mb-4 text-center font-bold underline decoration-4 decoration-primary-blue text-[28px] text-primary-blue">
         Features
       </h2>
 
@@ -57,7 +57,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
         ].map(({ label, key }) => (
           <li
             key={key}
-            className="flex items-center font-round font-bold text-[25px] mdx:text-xl lg:text-2xl xs:text-base"
+            className="flex items-center font-round font-bold text-[18px]"
           >
             <BsDot className="mr-2" /> {label}
           </li>
@@ -66,7 +66,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
         
           <button
             onClick={handleClick}
-            className="mt-4 flex items-center gap-2 bg-white px-4 py-4 font-bold text-[20px] 
+            className="mt-4 flex items-center gap-2 bg-white px-4 py-4 font-bold text-[16px] 
                 hover:shadow-[0px_1px_4px_rgba(0,0,0,0.16)] 
                 hover:scale-[0.96] 
                 transition-transform duration-150 "

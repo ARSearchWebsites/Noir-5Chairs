@@ -24,7 +24,7 @@ const Nav: React.FC = () => {
           <button onClick={scrollToProducts} className="inline-block p-[10px] text-[18px] font-medium uppercase
                text-nav-black transition-colors duration-300
                hover:text-nav-helper">
-            SUNGLASSES
+            CHAIRS
           </button>
         </li>
       </ul>
@@ -46,7 +46,7 @@ const Nav: React.FC = () => {
             </NavLink>
           </li>
           <li>
-            <button onClick={scrollToProducts}>SUNGLASSES</button>
+            <button onClick={scrollToProducts}>CHAIRS</button>
           </li>
         </ul>
       )}

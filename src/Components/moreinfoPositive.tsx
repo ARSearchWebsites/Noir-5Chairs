@@ -13,26 +13,29 @@ const MoreinfoPositive: React.FC = () => {
     ReactGA.send({ hitType: 'pageview', page: window.location.href, title: 'MoreInfo Page' });
   }, []);
 
-  const params   = new URLSearchParams(window.location.search);
-  const product  = data.find(
-    (p: Product) => String(p.id) === params.get('product_id')
-  ) ?? null;
+  const params = new URLSearchParams(window.location.search);
+  const product =
+    data.find((p: Product) => String(p.id) === params.get('product_id')) ?? null;
 
-  const userId   = params.get('userId') ?? '';
-  const version  = params.get('isV');
+  const userId = params.get('userId') ?? '';
+  const version = params.get('isV');
 
   const [open, setOpen] = useState({
     material: false,
     backrest: false,
-    seat:     false,
-    safety:   false,
+    seat: false,
+    safety: false,
   });
 
   const toggle = (key: keyof typeof open) =>
     setOpen((s) => ({ ...s, [key]: !s[key] }));
 
   const logBuyNow = async (payload: string) =>
-    setDoc(doc(db, 'users', userId), { 'Clicked Jetzt Kaufen': arrayUnion(payload) }, { merge: true });
+    setDoc(
+      doc(db, 'users', userId),
+      { 'Clicked Jetzt Kaufen': arrayUnion(payload) },
+      { merge: true }
+    );
 
   const logFeature = async (feature: string) =>
     setDoc(
@@ -55,43 +58,56 @@ const MoreinfoPositive: React.FC = () => {
         />
       </div>
 
-      <main id="top" className="mt-20 px-4 flex flex-col items-center text-center">
-        <h1 className="text-primary-blue text-5xl font-bold my-4">Product Details</h1>
+      {/* Match moreinfonegative layout/styling */}
+      <main id="top" className="mt-20 px-10 mb-10 flex flex-col items-center text-center">
+        <h1 className="text-primary-blue text-[32px] font-bold my-8">Product Details</h1>
 
         <FeatureBlock
           title="Material: Metal"
           open={open.material}
-          toggle={() => { toggle('material'); logFeature('Material'); }}
+          toggle={() => {
+            toggle('material');
+            logFeature('Material');
+          }}
         >
-          The {product.product_name} is made from high-quality metal, ensuring enhanced stability and
-          durability.
+          The {product.product_name} is made from high-quality metal, ensuring enhanced
+          stability and durability.
         </FeatureBlock>
 
         <FeatureBlock
           title="Backrest: Reclining function included"
           open={open.backrest}
-          toggle={() => { toggle('backrest'); logFeature('Backrest'); }}
+          toggle={() => {
+            toggle('backrest');
+            logFeature('Backrest');
+          }}
         >
-          The {product.product_name} features a reclining backrest, allowing for a more ergonomic
-          sitting posture.
+          The {product.product_name} features a reclining backrest, allowing for a more
+          ergonomic sitting posture.
         </FeatureBlock>
 
         <FeatureBlock
           title="Adjustable Seat Height: Included"
           open={open.seat}
-          toggle={() => { toggle('seat'); logFeature('Adjustable Seat Height'); }}
+          toggle={() => {
+            toggle('seat');
+            logFeature('Adjustable Seat Height');
+          }}
         >
-          The {product.product_name} allows for adjustable seat height to suit different body
-          heights.
+          The {product.product_name} allows for adjustable seat height to suit different
+          body heights.
         </FeatureBlock>
 
         <FeatureBlock
           title="Safety Feature: Included"
           open={open.safety}
-          toggle={() => { toggle('safety'); logFeature('Safety Feature'); }}
+          toggle={() => {
+            toggle('safety');
+            logFeature('Safety Feature');
+          }}
         >
-          A safety mechanism locks the wheels when the chair is unoccupied, keeping it securely in
-          place.
+          A safety mechanism locks the wheels when the chair is unoccupied, keeping it
+          securely in place.
         </FeatureBlock>
       </main>
 
@@ -102,18 +118,33 @@ const MoreinfoPositive: React.FC = () => {
 
 export default MoreinfoPositive;
 
-interface FeatureProps { title: string; open: boolean; toggle: () => void; children: React.ReactNode; }
+interface FeatureProps {
+  title: string;
+  open: boolean;
+  toggle: () => void;
+  children: React.ReactNode;
+}
 
-const FeatureBlock: React.FC<FeatureProps> = ({ title, open, toggle, children }) => (
-  <>
-    <h2
-      className="text-primary-blue text-3xl font-semibold flex items-center justify-center gap-2 cursor-pointer"
-      onClick={toggle}
-    >
-      {title} {open ? <AiOutlineUp size={25} /> : <AiOutlineDown size={25} />}
-    </h2>
-    <p className={`${open ? 'block' : 'hidden'} text-black max-w-2xl mx-auto mt-2 text-lg`}>
-      {children}
-    </p>
-  </>
-);
+const FeatureBlock: React.FC<FeatureProps> = ({ title, open, toggle, children }) => {
+  return (
+    <div className="w-full max-w-2xl py-4">
+      <button
+        type="button"
+        onClick={toggle}
+        className="w-full flex items-start justify-between gap-4 text-left text-primary-blue text-xl font-semibold"
+      >
+        {/* Title grows naturally */}
+        <span className="flex-1 text-center leading-snug">{title}</span>
+
+        {/* Fixed icon container */}
+        <span className="shrink-0 pt-1">
+          {open ? <AiOutlineUp size={22} /> : <AiOutlineDown size={22} />}
+        </span>
+      </button>
+
+      <p className={`${open ? 'block mt-3' : 'hidden'} text-black text-lg`}>
+        {children}
+      </p>
+    </div>
+  );
+};

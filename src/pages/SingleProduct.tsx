@@ -136,6 +136,17 @@ const SingleProduct: React.FC = () => {
       console.error("Firestore error (Jetzt Kaufen):", err);
     }
   };
+  const handleOpen3D = useCallback(() => {
+    if (!product?.src) return;
+  
+    const url =
+      `${window.location.origin}/3dviewer` +
+      `?src=${encodeURIComponent(product.src)}` +
+      `&name=${encodeURIComponent(product.product_name)}`;
+  
+    window.open(url, "_blank", "noopener,noreferrer");
+  }, [product]);
+  
 
   const handleViewInSpace = useCallback(() => {
     if (!product) return;
@@ -170,31 +181,26 @@ const SingleProduct: React.FC = () => {
         <h1 className="text-[50px] font-extrabold text-center text-primary-blue">{product.product_name}</h1>
 
         {mode === "2" ? (
-          <Videosection product={product} />
+          <div className="flex flex-col items-center gap-6">
+          <button
+            onClick={handleOpen3D}
+            className="mt-6  mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+          >
+            Open 3D in new window
+          </button>
+        </div>
         ) : (
-          <>
-            {/* View-in-AR button (delivers user activation) */}
-            <div className="flex justify-center w-full">
-               {/* 
-              <button
-                onClick={handleViewInSpace}
-                className="mt-6 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-              >
-                View in your space
-              </button>
-              */}
-                <iframe
-                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
-                title="AR Chair Viewer"
-                allow="xr-spatial-tracking; camera; microphone; fullscreen"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                loading="lazy"
-                //className="w-[350px]"
+          <div className="flex flex-col items-center h-[120px]">
+            <iframe
+              src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
+              title="AR Chair Viewer"
+              allow="xr-spatial-tracking; camera; microphone; fullscreen"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              loading="lazy"
+              className="w-full h-[120px]"
             />
-            </div>
-
-          </>
+          </div>
         )}
       </div>
 
