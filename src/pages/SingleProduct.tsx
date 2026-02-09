@@ -1,23 +1,19 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import styled from "styled-components";
 import product_card from "../data/product_data";
 import ProductDisplay from "../Components/ProductDisplay";
 import Footer from "../Components/Footer";
-import Videosection from "../Components/Videosection";
 import SecondHeader from "../Components/SecondHeader";
 import { doc, setDoc, arrayUnion } from "@firebase/firestore";
 import { db } from "../services/firebase";
 import { Product, TimeData } from "../types/types";
-
 
 /* ------------------------------------------------------------------ */
 /* Component                                                          */
 /* ------------------------------------------------------------------ */
 const SingleProduct: React.FC = () => {
   /* ---------- query-params ---------- */
-  const params = new URLSearchParams(window.location.search);
-  const product_id = Number(params.get("product_id"));   // NaN if missing
-  const [mode, setMode]     = useState<string | null>(null);
+  const product_id = Number(new URLSearchParams(window.location.search).get("product_id"));
+  const [mode, setMode] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
   /* ---------- product & timing state ---------- */
@@ -26,16 +22,39 @@ const SingleProduct: React.FC = () => {
   const [initialTimeSpent, setInitialTimeSpent] = useState<number>(0);
 
   const [upperSectionStart, setUpperSectionStart] = useState<number | null>(null);
-  const [timeSpentUpper,     setTimeSpentUpper]   = useState<number>(0);
-  const [timeData,           setTimeData]         = useState<TimeData | null>(null);
+  const [timeSpentUpper, setTimeSpentUpper] = useState<number>(0);
+  const [timeData, setTimeData] = useState<TimeData | null>(null);
 
-  /* ---------- "version" flag ---------- */
+  /* ------------------------------------------------------------------ */
+  /* AWAY TIME KEYS                                                     */
+  /* ------------------------------------------------------------------ */
+  const AWAY_START_KEY = "singleProduct_awayStart";
+  const AWAY_TOTAL_KEY = "singleProduct_awayTotalSeconds";
+
+  const startAway = useCallback(() => {
+    if (!sessionStorage.getItem(AWAY_START_KEY)) {
+      sessionStorage.setItem(AWAY_START_KEY, String(Date.now()));
+    }
+  }, []);
+
+  const stopAwayAndAccumulate = useCallback(() => {
+    const awayStart = Number(sessionStorage.getItem(AWAY_START_KEY) ?? "0");
+    if (!awayStart) return;
+
+    const deltaSec = (Date.now() - awayStart) / 1000;
+    const prev = Number(sessionStorage.getItem(AWAY_TOTAL_KEY) ?? "0");
+
+    sessionStorage.setItem(AWAY_TOTAL_KEY, String(prev + deltaSec));
+    sessionStorage.removeItem(AWAY_START_KEY);
+  }, []);
+
+  /* ---------- version flag ---------- */
   const version = useMemo(() => {
-    const seen   = sessionStorage.getItem("productdetailsVersion");
-    const order  = sessionStorage.getItem("shuffledIDs");
+    const seen = sessionStorage.getItem("productdetailsVersion");
+    const order = sessionStorage.getItem("shuffledIDs");
     if (!seen || !order || !product) return undefined;
 
-    const seenArr  = JSON.parse(seen)  as boolean[];
+    const seenArr = JSON.parse(seen) as boolean[];
     const orderArr = JSON.parse(order) as (number | string)[];
     const idx = orderArr.indexOf(product.id);
     return idx > -1 ? seenArr[idx] : undefined;
@@ -47,21 +66,32 @@ const SingleProduct: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    const params = new URLSearchParams(window.location.search);
+
     setMode(params.get("mode"));
     setUserId(params.get("userId"));
 
     setPageStartTime(Date.now());
 
-    const found = product_card.find((p) => p.id === product_id) as Product | undefined;
+    const found = product_card.find((p) => p.id === product_id) as
+      | Product
+      | undefined;
+
     setProduct(found ?? null);
 
     if (found) {
       const prev = Number(
-        sessionStorage.getItem(`timeSpentOnSingleProductPage_${found.product_name}`) ?? "0",
+        sessionStorage.getItem(
+          `timeSpentOnSingleProductPage_${found.product_name}`
+        ) ?? "0"
       );
       setInitialTimeSpent(prev);
     }
-  }, [product_id]);
+
+    // If user returns to this page and awayStart exists,
+    // immediately close that away timer
+    stopAwayAndAccumulate();
+  }, [product_id, stopAwayAndAccumulate]);
 
   /* ---------------------------------------------------------------- */
   /* Persist total time on page when unmounting                       */
@@ -70,26 +100,51 @@ const SingleProduct: React.FC = () => {
     return () => {
       if (!product) return;
 
-      const elapsed = (Date.now() - pageStartTime) / 1_000;
+      const elapsed = (Date.now() - pageStartTime) / 1000;
+
       sessionStorage.setItem(
         `timeSpentOnSingleProductPage_${product.product_name}`,
-        String(initialTimeSpent + elapsed),
+        String(initialTimeSpent + elapsed)
       );
     };
   }, [pageStartTime, initialTimeSpent, product]);
 
   /* ---------------------------------------------------------------- */
-  /* Hover-tracking for "presentation / upper" section                */
+  /* Visibility + lifecycle tracking (AWAY TIME)                      */
+  /* ---------------------------------------------------------------- */
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") startAway();
+      if (document.visibilityState === "visible") stopAwayAndAccumulate();
+    };
+
+    const onPageHide = () => startAway();
+    const onPageShow = () => stopAwayAndAccumulate();
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [startAway, stopAwayAndAccumulate]);
+
+  /* ---------------------------------------------------------------- */
+  /* Hover-tracking for upper section                                 */
   /* ---------------------------------------------------------------- */
   useEffect(() => {
     const upper = document.querySelector<HTMLDivElement>(".uppersection");
-    const single = document.querySelector<HTMLDivElement>(".single-product-page");
+    const single =
+      document.querySelector<HTMLDivElement>(".single-product-page");
     const header = document.querySelector<HTMLDivElement>(".secondHeader");
 
     const start = () => setUpperSectionStart(Date.now());
-    const stop  = () => {
+    const stop = () => {
       if (!upperSectionStart) return;
-      const delta = (Date.now() - upperSectionStart) / 1_000;
+      const delta = (Date.now() - upperSectionStart) / 1000;
       setTimeSpentUpper((prev) => prev + delta);
     };
 
@@ -97,6 +152,7 @@ const SingleProduct: React.FC = () => {
       upper.addEventListener("mouseenter", start);
       if (mode !== "1") upper.addEventListener("mouseleave", stop);
     }
+
     if (mode === "1" && single && header) {
       single.addEventListener("mouseenter", stop);
       header.addEventListener("mouseenter", stop);
@@ -114,49 +170,58 @@ const SingleProduct: React.FC = () => {
   }, [upperSectionStart, mode]);
 
   /* ---------------------------------------------------------------- */
-  /* When upper-section time changes, prepare the payload             */
+  /* Update timeData                                                   */
   /* ---------------------------------------------------------------- */
   useEffect(() => {
     if (product)
-      setTimeData({ productName: product.product_name, timeSpentInUpperSection: timeSpentUpper });
+      setTimeData({
+        productName: product.product_name,
+        timeSpentInUpperSection: timeSpentUpper,
+      });
   }, [timeSpentUpper, product]);
 
   /* ---------------------------------------------------------------- */
-  /* Firestore "Jetzt kaufen" logger                                  */
+  /* Firestore logger                                                  */
   /* ---------------------------------------------------------------- */
   const handleJetztKaufenClick = async (log: string): Promise<void> => {
     if (!userId) return;
+
     try {
       await setDoc(
         doc(db, "users", userId),
         { "Clicked Jetzt Kaufen": arrayUnion(log) },
-        { merge: true },
+        { merge: true }
       );
     } catch (err) {
-      console.error("Firestore error (Jetzt Kaufen):", err);
+      console.error("Firestore error:", err);
     }
   };
+
+  /* ---------------------------------------------------------------- */
+  /* 3D + AR handlers (START AWAY TIMER HERE)                         */
+  /* ---------------------------------------------------------------- */
   const handleOpen3D = useCallback(() => {
     if (!product?.src) return;
-  
+
+    startAway();
+
     const url =
       `${window.location.origin}/3dviewer` +
       `?src=${encodeURIComponent(product.src)}` +
       `&name=${encodeURIComponent(product.product_name)}`;
-  
+
     window.open(url, "_blank", "noopener,noreferrer");
-  }, [product]);
-  
+  }, [product, startAway]);
 
   const handleViewInSpace = useCallback(() => {
     if (!product) return;
-    // Top-level navigation ensures Scene Viewer / Quick Look may launch
+
+    startAway();
+
     window.location.href = `https://ar-chair-viewer-six.vercel.app/?model=${encodeURIComponent(
-      product.sku,
+      product.sku
     )}`;
-    // If you prefer a new tab on desktop, swap for:
-    // window.open(url, "_blank", "noopener,noreferrer");
-  }, [product]);
+  }, [product, startAway]);
 
   /* ---------------------------------------------------------------- */
   if (!product) return <div>Loading…</div>;
@@ -174,32 +239,28 @@ const SingleProduct: React.FC = () => {
         />
       </div>
 
-      {/* Debug line you had – remove if no longer needed */}
-      {/* {JSON.stringify(timeData)} */}
-
       <div className="uppersection mt-20 pt-10">
-        <h1 className="text-[50px] font-extrabold text-center text-primary-blue">{product.product_name}</h1>
+        <h1 className="text-[50px] font-extrabold text-center text-primary-blue">
+          {product.product_name}
+        </h1>
 
         {mode === "2" ? (
           <div className="flex flex-col items-center gap-6">
-          <button
-            onClick={handleOpen3D}
-            className="mt-6  mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-          >
-            Open 3D in new window
-          </button>
-        </div>
+            <button
+              onClick={handleOpen3D}
+              className="mt-6 mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+            >
+              Open 3D in new window
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col items-center h-[120px]">
-            <iframe
-              src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
-              title="AR Chair Viewer"
-              allow="xr-spatial-tracking; camera; microphone; fullscreen"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              loading="lazy"
-              className="w-full h-[120px]"
-            />
+            <button
+              onClick={handleViewInSpace}
+              className="mt-6 mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+            >
+              View in AR
+            </button>
           </div>
         )}
       </div>
@@ -214,7 +275,12 @@ const SingleProduct: React.FC = () => {
             farbe: product.farbe,
           }}
           mode={mode ?? undefined}
-          timeData={timeData ?? { productName: product.product_name, timeSpentInUpperSection: 0 }}
+          timeData={
+            timeData ?? {
+              productName: product.product_name,
+              timeSpentInUpperSection: 0,
+            }
+          }
         />
       </div>
 
@@ -224,5 +290,3 @@ const SingleProduct: React.FC = () => {
 };
 
 export default SingleProduct;
-
-

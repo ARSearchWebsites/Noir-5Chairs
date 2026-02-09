@@ -36,9 +36,10 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       },
       { merge: true },
     );
+    const versionValue = productDetailsVersion[shuffledIndex];
 
     navigate(
-      `/product/moreinfo?mode=${mode}&product_id=${product.id}&userId=${userId}&isV=${productDetailsVersion[shuffledIndex]}`,
+      `/product/moreinfo?mode=${mode}&product_id=${product.id}&userId=${userId}&isV=${versionValue === true ? "true" : "false"}`,
     );
   };
 

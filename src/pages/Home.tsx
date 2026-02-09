@@ -3,8 +3,8 @@ import HeroSection from "../Components/LandingPage";
 import ProductList from "../Components/ProductList";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import { doc, setDoc, arrayUnion } from "@firebase/firestore";
-import { db } from "../services/firebase";
+//import { doc, setDoc, arrayUnion } from "@firebase/firestore";
+//import { db } from "../services/firebase";
 
 interface HomeProps {
   forwardedRef?: React.Ref<HTMLDivElement>;
@@ -17,18 +17,6 @@ const Home: React.FC<HomeProps> = ({ forwardedRef }) => {
   const [pageStart, setPageStart]   = useState<number>(0);
   const [initial,   setInitial]     = useState<number>(0);
 
-
-  const handleClick = async (feature: string): Promise<void> => {
-    try {
-      await setDoc(
-        doc(db, "users", userId),
-        { "Clicked Feature": arrayUnion(`${feature} ${new Date().toISOString()}`) },
-        { merge: true },
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);

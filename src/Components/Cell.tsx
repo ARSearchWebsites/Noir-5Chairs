@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { doc, setDoc, arrayUnion } from "@firebase/firestore";
 import { db } from "../services/firebase";
 
-
 export interface Shoe {
   id: string;
   product_name: string;
@@ -26,23 +25,51 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
   }, []);
 
   const handleClick = async (): Promise<void> => {
-    const productIdSequence: string[] =
-      JSON.parse(sessionStorage.getItem("shuffledIDs") ?? "[]");
+    const productIdSequence: string[] = JSON.parse(
+      sessionStorage.getItem("shuffledIDs") ?? "[]"
+    );
+
     const shuffledIndex = productIdSequence.indexOf(shoe.id);
 
-    let productDetailsVersion: boolean[] =
-      JSON.parse(sessionStorage.getItem("productdetailsVersion") ?? "[]");
+    if (shuffledIndex === -1) {
+      console.warn("shoe.id not found in shuffledIDs", {
+        shoeId: shoe.id,
+        shuffledIDs: productIdSequence,
+      });
 
-    let lastValueRaw = sessionStorage.getItem("lastValue");
-    let lastValue = lastValueRaw === null ? Math.random() < 0.5 : lastValueRaw === "true";
+      // Still allow navigation/logging even if experiment assignment fails
+      navigate(`/product?mode=${mode ?? ""}&product_id=${shoe.id}&userId=${userId}`);
+      return;
+    }
 
-    if (typeof productDetailsVersion[shuffledIndex] !== "boolean") {
-      lastValue = !lastValue;
-      productDetailsVersion[shuffledIndex] = lastValue;
-      sessionStorage.setItem(
-        "productdetailsVersion",
-        JSON.stringify(productDetailsVersion)
+    let productDetailsVersion: unknown = null;
+    try {
+      productDetailsVersion = JSON.parse(
+        sessionStorage.getItem("productdetailsVersion") ?? "[]"
       );
+    } catch {
+      productDetailsVersion = [];
+    }
+
+    let versions: (boolean | undefined)[] = Array.isArray(productDetailsVersion)
+      ? (productDetailsVersion as (boolean | undefined)[])
+      : [];
+
+    // Ensure versions array matches shuffledIDs length
+    if (versions.length !== productIdSequence.length) {
+      versions = Array(productIdSequence.length).fill(undefined);
+    }
+
+    const lastValueRaw = sessionStorage.getItem("lastValue");
+    let lastValue =
+      lastValueRaw === null ? Math.random() < 0.5 : lastValueRaw === "true";
+
+    // Assign if this product not assigned yet
+    if (typeof versions[shuffledIndex] !== "boolean") {
+      lastValue = !lastValue; // alternate A/B assignment
+      versions[shuffledIndex] = lastValue;
+
+      sessionStorage.setItem("productdetailsVersion", JSON.stringify(versions));
       sessionStorage.setItem("lastValue", String(lastValue));
     }
 
@@ -58,9 +85,7 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
         { merge: true }
       );
 
-      navigate(
-        `/product?mode=${mode ?? ""}&product_id=${shoe.id}&userId=${userId}`
-      );
+      navigate(`/product?mode=${mode ?? ""}&product_id=${shoe.id}&userId=${userId}`);
     } catch (err) {
       console.error("Error during navigation or data update:", err);
     }
@@ -84,9 +109,7 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
       <p className="text-[22px] font-bold mb-1 font-['Tahoma'] text-[#364F6B]">
         {shoe.product_name}
       </p>
-      <p className="text-[20px] font-bold text-black mb-4">
-        {shoe.price}
-      </p>
+      <p className="text-[20px] font-bold text-black mb-4">{shoe.price}</p>
 
       <button
         onClick={handleClick}
