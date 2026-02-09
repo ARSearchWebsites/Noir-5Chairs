@@ -17,10 +17,6 @@ const Home: React.FC<HomeProps> = ({ forwardedRef }) => {
   const [pageStart, setPageStart]   = useState<number>(0);
   const [initial,   setInitial]     = useState<number>(0);
 
-  const heroData = {
-    name: "Sunny",
-    description: "This is a description for the home page",
-  };
 
   const handleClick = async (feature: string): Promise<void> => {
     try {

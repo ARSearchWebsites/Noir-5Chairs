@@ -7,7 +7,6 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai';
 import { doc, setDoc, arrayUnion } from '@firebase/firestore';
 import { db } from '../services/firebase';
 import { Product } from '../types/types';
-import { useMediaQuery } from 'react-responsive';
 
 const MoreinfoPositive: React.FC = () => {
   useEffect(() => {
