@@ -29,28 +29,63 @@ const SingleProduct: React.FC = () => {
   const [timeSpentUpper, setTimeSpentUpper] = useState<number>(0);
   const [timeData, setTimeData] = useState<TimeData | null>(null);
 
-  /* ------------------------------------------------------------------ */
-  /* AWAY TIME KEYS                                                     */
-  /* ------------------------------------------------------------------ */
-  const AWAY_START_KEY = "singleProduct_awayStart";
-  const AWAY_TOTAL_KEY = "singleProduct_awayTotalSeconds";
+  // ------------------------------
+// AWAY TIME (product-aware)
+// ------------------------------
+const AWAY_CTX_KEY = "singleProduct_awayCtx"; // JSON: { productId, productName, startedAt }
+const AWAY_TOTAL_ALL_KEY = "singleProduct_awayTotalSeconds_all";
 
-  const startAway = useCallback(() => {
-    if (!sessionStorage.getItem(AWAY_START_KEY)) {
-      sessionStorage.setItem(AWAY_START_KEY, String(Date.now()));
-    }
-  }, []);
+const getAwayTotalKeyForProduct = (productName: string) =>
+  `singleProduct_awayTotalSeconds_${productName}`;
 
-  const stopAwayAndAccumulate = useCallback(() => {
-    const awayStart = Number(sessionStorage.getItem(AWAY_START_KEY) ?? "0");
-    if (!awayStart) return;
+const startAway = useCallback(() => {
+  if (!product) return;
 
-    const deltaSec = (Date.now() - awayStart) / 1000;
-    const prev = Number(sessionStorage.getItem(AWAY_TOTAL_KEY) ?? "0");
+  // don't overwrite if already running
+  if (sessionStorage.getItem(AWAY_CTX_KEY)) return;
 
-    sessionStorage.setItem(AWAY_TOTAL_KEY, String(prev + deltaSec));
-    sessionStorage.removeItem(AWAY_START_KEY);
-  }, []);
+  sessionStorage.setItem(
+    AWAY_CTX_KEY,
+    JSON.stringify({
+      productId: product.id,
+      productName: product.product_name,
+      startedAt: Date.now(),
+    })
+  );
+}, [product]);
+
+const stopAwayAndAccumulate = useCallback(() => {
+  const raw = sessionStorage.getItem(AWAY_CTX_KEY);
+  if (!raw) return;
+
+  let ctx: { productId: number; productName: string; startedAt: number } | null =
+    null;
+
+  try {
+    ctx = JSON.parse(raw);
+  } catch {
+    ctx = null;
+  }
+  if (!ctx?.startedAt || !ctx.productName) {
+    sessionStorage.removeItem(AWAY_CTX_KEY);
+    return;
+  }
+
+  const deltaSec = (Date.now() - ctx.startedAt) / 1000;
+
+  // 1) per-product total
+  const perKey = getAwayTotalKeyForProduct(ctx.productName);
+  const prevPer = Number(sessionStorage.getItem(perKey) ?? "0");
+  sessionStorage.setItem(perKey, String(prevPer + deltaSec));
+
+  // 2) total across products
+  const prevAll = Number(sessionStorage.getItem(AWAY_TOTAL_ALL_KEY) ?? "0");
+  sessionStorage.setItem(AWAY_TOTAL_ALL_KEY, String(prevAll + deltaSec));
+
+  // stop timer
+  sessionStorage.removeItem(AWAY_CTX_KEY);
+}, []);
+
 
   /* ---------- version flag ---------- */
   const version = useMemo(() => {
@@ -58,11 +93,12 @@ const SingleProduct: React.FC = () => {
     const order = sessionStorage.getItem("shuffledIDs");
     if (!seen || !order || !product) return undefined;
 
-    const seenArr = JSON.parse(seen) as boolean[];
+    const seenArr = JSON.parse(seen) as (boolean | null | undefined)[];
     const orderArr = JSON.parse(order) as (number | string)[];
-    const idx = orderArr.indexOf(product.id);
-    return idx > -1 ? seenArr[idx] : undefined;
-  }, [product]);
+    const idx = orderArr.map(String).indexOf(String(product.id));
+  return idx > -1 ? (seenArr[idx] ?? undefined) : undefined;
+}, [product]);
+
 
   /* ---------------------------------------------------------------- */
   /* One-time mount logic                                             */
@@ -268,7 +304,7 @@ const SingleProduct: React.FC = () => {
                     allowFullScreen
                     referrerPolicy="no-referrer-when-downgrade"
                     loading="lazy"
-                    //className="w-[350px]"
+                    className="w-[350px] h-[130px]"
                   />
                 </div>
               </div>

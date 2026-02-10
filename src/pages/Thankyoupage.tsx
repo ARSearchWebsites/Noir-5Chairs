@@ -18,52 +18,69 @@ const ThankYouPage: React.FC = () => {
     const ref = doc(db, "users", userId);
 
     const data: Record<string, unknown> = {};
+
     let totalSingle = 0;
     let totalDetails = 0;
 
+    // NEW totals:
+    let totalAwaySingleAcrossProducts = 0;
+
     // Treat only these keys as numeric "time" keys.
+    // NOTE: startsWith("singleProduct_awayTotalSeconds") covers:
+    // - singleProduct_awayTotalSeconds_<ProductName>
+    // - singleProduct_awayTotalSeconds_all
     const isTimeKey = (key: string) =>
       key.startsWith("timeSpentOnSingleProductPage") ||
       key.startsWith("timeSpentOnProductDetailsPage") ||
       key === "timeSpentOnHomePage" ||
-      key === "singleProduct_awayTotalSeconds" || // if you used this name
-      key === "singleProduct_awayTotalSeconds" ||
-      key === "singleProduct_awayTotalSeconds";
-
-    // If you used a different away key in your latest code, add it here too.
-    const isAlsoTimeKey = (key: string) =>
-      isTimeKey(key) ||
-      key === "singleProduct_awayTotalSeconds" ||
-      key === "singleProduct_awayTotalSeconds";
+      key.startsWith("singleProduct_awayTotalSeconds");
 
     Object.keys(sessionStorage).forEach((key) => {
       const raw = sessionStorage.getItem(key);
 
-      if (isAlsoTimeKey(key)) {
+      if (isTimeKey(key)) {
         const val = Number(raw ?? "0") || 0;
 
         if (key.startsWith("timeSpentOnSingleProductPage")) totalSingle += val;
         if (key.startsWith("timeSpentOnProductDetailsPage")) totalDetails += val;
 
+        // Sum per-product away keys (exclude the convenience "_all" key to avoid double count)
+        if (
+          key.startsWith("singleProduct_awayTotalSeconds_") &&
+          key !== "singleProduct_awayTotalSeconds_all"
+        ) {
+          totalAwaySingleAcrossProducts += val;
+        }
+
         data[key] = val;
+        return;
+      }
+
+      // Keep non-time keys (arrays/booleans/strings) as-is.
+      // Try JSON.parse first so shuffledIDs / productdetailsVersion
+      // become proper arrays in Firestore.
+      if (raw === null) {
+        data[key] = null;
       } else {
-        // Keep non-time keys (arrays/booleans/strings) as-is.
-        // Try JSON.parse first so shuffledIDs / productdetailsVersion
-        // become proper arrays in Firestore.
-        if (raw === null) {
-          data[key] = null;
-        } else {
-          try {
-            data[key] = JSON.parse(raw);
-          } catch {
-            data[key] = raw;
-          }
+        try {
+          data[key] = JSON.parse(raw);
+        } catch {
+          data[key] = raw;
         }
       }
     });
 
+    // Existing totals
     data.totalTimeSpentOnSingleProductPage = totalSingle;
     if (totalDetails > 0) data.totalTimeSpentOnProductDetailsPage = totalDetails;
+
+    // NEW: away totals
+    data.totalAwayTimeOnSingleProductPage = totalAwaySingleAcrossProducts;
+
+    // Optional: also store the precomputed "_all" key (if present)
+    data.totalAwayTimeOnSingleProductPage_allKey = Number(
+      sessionStorage.getItem("singleProduct_awayTotalSeconds_all") ?? "0"
+    );
 
     // Store URL params too (optional but helpful)
     data.mode = mode ?? null;
