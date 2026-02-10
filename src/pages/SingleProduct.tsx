@@ -218,7 +218,7 @@ const SingleProduct: React.FC = () => {
 
     startAway();
 
-    window.location.href = `https://ar-chair-viewer-six.vercel.app/?model=${encodeURIComponent(
+    window.location.href = `https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(
       product.sku
     )}`;
   }, [product, startAway]);
@@ -262,12 +262,23 @@ const SingleProduct: React.FC = () => {
   <div className="flex justify-center">
   <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
     <div className="flex flex-col items-center gap-4">
+      {/** 
       <button
         onClick={handleViewInSpace}
         className="rounded-md bg-primary-blue px-10 py-4 text-lg font-semibold text-white hover:bg-gray-800"
       >
         View in AR
       </button>
+      */}
+      <iframe
+                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
+                title="AR Chair Viewer"
+                allow="xr-spatial-tracking; camera; microphone; fullscreen"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                loading="lazy"
+                //className="w-[350px]"
+              />
     
     </div>
   </div>
