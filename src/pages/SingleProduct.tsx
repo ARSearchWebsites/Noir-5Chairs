@@ -12,7 +12,9 @@ import { Product, TimeData } from "../types/types";
 /* ------------------------------------------------------------------ */
 const SingleProduct: React.FC = () => {
   /* ---------- query-params ---------- */
-  const product_id = Number(new URLSearchParams(window.location.search).get("product_id"));
+  const product_id = Number(
+    new URLSearchParams(window.location.search).get("product_id")
+  );
   const [mode, setMode] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -21,7 +23,9 @@ const SingleProduct: React.FC = () => {
   const [pageStartTime, setPageStartTime] = useState<number>(0);
   const [initialTimeSpent, setInitialTimeSpent] = useState<number>(0);
 
-  const [upperSectionStart, setUpperSectionStart] = useState<number | null>(null);
+  const [upperSectionStart, setUpperSectionStart] = useState<number | null>(
+    null
+  );
   const [timeSpentUpper, setTimeSpentUpper] = useState<number>(0);
   const [timeData, setTimeData] = useState<TimeData | null>(null);
 
@@ -213,15 +217,7 @@ const SingleProduct: React.FC = () => {
     window.open(url, "_blank", "noopener,noreferrer");
   }, [product, startAway]);
 
-  const handleViewInSpace = useCallback(() => {
-    if (!product) return;
-
-    startAway();
-
-    window.location.href = `https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(
-      product.sku
-    )}`;
-  }, [product, startAway]);
+  
 
   /* ---------------------------------------------------------------- */
   if (!product) return <div>Loading…</div>;
@@ -240,53 +236,46 @@ const SingleProduct: React.FC = () => {
       </div>
 
       <div className="uppersection mt-20 pt-14">
-  <div className="mx-auto max-w-5xl px-4">
-    <h1 className="text-[50px] font-extrabold text-center text-primary-blue">
-      {product.product_name}
-    </h1>
+        <div className="mx-auto max-w-5xl px-4">
+          <h1 className="text-[50px] font-extrabold text-center text-primary-blue">
+            {product.product_name}
+          </h1>
 
-    {mode === "2" ? (
-  <div className="flex justify-center">
-    <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
-      <div className="flex justify-center">
-        <button
-          onClick={handleOpen3D}
-          className="rounded-md bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-        >
-          Open 3D in new window
-        </button>
+          {mode === "2" ? (
+            <div className="flex justify-center">
+              <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleOpen3D}
+                    className="rounded-md bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+                  >
+                    Open 3D in new window
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
+                <div className="flex flex-col items-center gap-4">
+                  
+                  <iframe
+                    src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(
+                      product.sku
+                    )}`}
+                    title="AR Chair Viewer"
+                    allow="xr-spatial-tracking; camera; microphone; fullscreen"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    loading="lazy"
+                    //className="w-[350px]"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  </div>
-) : (
-  <div className="flex justify-center">
-  <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
-    <div className="flex flex-col items-center gap-4">
-      {/** 
-      <button
-        onClick={handleViewInSpace}
-        className="rounded-md bg-primary-blue px-10 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-      >
-        View in AR
-      </button>
-      */}
-      <iframe
-                src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(product.sku)}`}
-                title="AR Chair Viewer"
-                allow="xr-spatial-tracking; camera; microphone; fullscreen"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                loading="lazy"
-                //className="w-[350px]"
-              />
-    
-    </div>
-  </div>
-</div>
-)}
-  </div>
-</div>
-
 
       <div className="single-product-page">
         <ProductDisplay
