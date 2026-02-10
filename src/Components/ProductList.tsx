@@ -23,7 +23,7 @@ const shuffleArray = <T extends { id: number }>(array: readonly T[]): T[] => {
     const j = Math.floor(Math.random() * (i + 1));
     [items[i], items[j]] = [items[j], items[i]];
   }
-  sessionStorage.setItem(key, JSON.stringify(items.map((i) => String(i.id))));
+  sessionStorage.setItem(key, JSON.stringify(items.map((i) => i.id)));
   return items;
 };
 
@@ -45,7 +45,7 @@ const ProductList: FC<ProductListProps> = ({ forwardedRef, userId }) => {
           <Cell
             key={item.id}
             userId={userId ?? ''}
-            shoe={{ ...item, id: String(item.id) }}
+            chair={{ ...item, id: item.id }}
             image={item.thumb}
           />
         ))}

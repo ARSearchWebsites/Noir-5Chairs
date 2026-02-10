@@ -3,19 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { doc, setDoc, arrayUnion } from "@firebase/firestore";
 import { db } from "../services/firebase";
 
-export interface Shoe {
-  id: string;
+export interface Chair {
+  id: number;
   product_name: string;
   price: string | number;
 }
 
 interface CellProps {
-  shoe: Shoe;
+  chair: Chair;
   image: string;
   userId: string;
 }
 
-const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
+const Cell: React.FC<CellProps> = ({ chair, image, userId }) => {
   const [mode, setMode] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -25,20 +25,20 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
   }, []);
 
   const handleClick = async (): Promise<void> => {
-    const productIdSequence: string[] = JSON.parse(
+    const productIdSequence: number[] = JSON.parse(
       sessionStorage.getItem("shuffledIDs") ?? "[]"
     );
 
-    const shuffledIndex = productIdSequence.indexOf(shoe.id);
+    const shuffledIndex = productIdSequence.indexOf(Number(chair.id));
 
     if (shuffledIndex === -1) {
-      console.warn("shoe.id not found in shuffledIDs", {
-        shoeId: shoe.id,
-        shuffledIDs: productIdSequence,
+      console.warn("chair.id not found in shuffledIDs", {
+        chairId: chair.id,
+        shuffledIDs: productIdSequence, 
       });
 
       // Still allow navigation/logging even if experiment assignment fails
-      navigate(`/product?mode=${mode ?? ""}&product_id=${shoe.id}&userId=${userId}`);
+      navigate(`/product?mode=${mode ?? ""}&product_id=${chair.id}&userId=${userId}`);
       return;
     }
 
@@ -79,13 +79,13 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
         ref,
         {
           "Clicked Shop Now": arrayUnion(
-            `${shoe.product_name} ${new Date().toISOString()}`
+            `${chair.product_name} ${new Date().toISOString()}`
           ),
         },
         { merge: true }
       );
 
-      navigate(`/product?mode=${mode ?? ""}&product_id=${shoe.id}&userId=${userId}`);
+      navigate(`/product?mode=${mode ?? ""}&product_id=${chair.id}&userId=${userId}`);
     } catch (err) {
       console.error("Error during navigation or data update:", err);
     }
@@ -101,15 +101,15 @@ const Cell: React.FC<CellProps> = ({ shoe, image, userId }) => {
       <figure className="w-[70%] h-[70%] aspect-[4/3]">
         <img
           src={image}
-          alt={shoe.product_name}
+          alt={chair.product_name}
           className="object-contain w-full h-full mx-auto"
         />
       </figure>
 
       <p className="text-[22px] font-bold mb-1 font-['Tahoma'] text-[#364F6B]">
-        {shoe.product_name}
+        {chair.product_name}
       </p>
-      <p className="text-[20px] font-bold text-black mb-4">{shoe.price}</p>
+      <p className="text-[20px] font-bold text-black mb-4">{chair.price}</p>
 
       <button
         onClick={handleClick}

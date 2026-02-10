@@ -239,31 +239,43 @@ const SingleProduct: React.FC = () => {
         />
       </div>
 
-      <div className="uppersection mt-20 pt-10">
-        <h1 className="text-[50px] font-extrabold text-center text-primary-blue">
-          {product.product_name}
-        </h1>
+      <div className="uppersection mt-20 pt-14">
+  <div className="mx-auto max-w-5xl px-4">
+    <h1 className="text-[50px] font-extrabold text-center text-primary-blue">
+      {product.product_name}
+    </h1>
 
-        {mode === "2" ? (
-          <div className="flex flex-col items-center gap-6">
-            <button
-              onClick={handleOpen3D}
-              className="mt-6 mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-            >
-              Open 3D in new window
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center h-[120px]">
-            <button
-              onClick={handleViewInSpace}
-              className="mt-6 mb-7 rounded-[2px] bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-            >
-              View in AR
-            </button>
-          </div>
-        )}
+    {mode === "2" ? (
+  <div className="flex justify-center">
+    <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
+      <div className="flex justify-center">
+        <button
+          onClick={handleOpen3D}
+          className="rounded-md bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+        >
+          Open 3D in new window
+        </button>
       </div>
+    </div>
+  </div>
+) : (
+  <div className="flex justify-center">
+  <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
+    <div className="flex flex-col items-center gap-4">
+      <button
+        onClick={handleViewInSpace}
+        className="rounded-md bg-primary-blue px-10 py-4 text-lg font-semibold text-white hover:bg-gray-800"
+      >
+        View in AR
+      </button>
+    
+    </div>
+  </div>
+</div>
+)}
+  </div>
+</div>
+
 
       <div className="single-product-page">
         <ProductDisplay

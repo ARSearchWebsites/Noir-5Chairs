@@ -22,8 +22,8 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    const productIdSequence: string[] = JSON.parse(sessionStorage.getItem('shuffledIDs') ?? '[]');
-    const shuffledIndex = productIdSequence.indexOf(product.id);
+    const productIdSequence: number[] = JSON.parse(sessionStorage.getItem('shuffledIDs') ?? '[]');
+    const shuffledIndex = productIdSequence.indexOf(Number(product.id));
     const productDetailsVersion: boolean[] = JSON.parse(
       sessionStorage.getItem('productdetailsVersion') ?? '[]',
     );
