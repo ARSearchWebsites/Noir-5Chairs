@@ -237,6 +237,61 @@ const stopAwayAndAccumulate = useCallback(() => {
     }
   };
 
+  const get3DViewerUrl = useCallback(() => {
+    if (!product?.src) return "";
+  
+    return (
+      `${window.location.origin}/3dviewer` +
+      `?src=${encodeURIComponent(product.src)}` +
+      `&name=${encodeURIComponent(product.product_name)}`
+    );
+  }, [product]);
+  
+  /* ---------------------------------------------------------------- */
+  /* 3D Launcher with iframe                                                       */
+  /* ---------------------------------------------------------------- */
+
+  const build3DLauncherSrcDoc = useCallback((url: string) => {
+    // JSON.stringify safely quotes/escapes the URL for inline JS
+    return `<!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <style>
+        html, body { height: 100%; margin: 0; }
+        body {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #E6E8EA;
+          font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }
+        button {
+          border: 0;
+          border-radius: 8px;
+          padding: 22px 24px;
+          font-size: 18px;
+          font-weight: 600;
+          color: white;
+          background: #364F6B; /* close to your primary-blue */
+          cursor: pointer;
+        }
+        button:hover { filter: brightness(0.9); }
+      </style>
+    </head>
+    <body>
+      <button id="btn">Open 3D in new window</button>
+      <script>
+        document.getElementById('btn').addEventListener('click', function () {
+          window.open(${JSON.stringify(url)}, '_blank', 'noopener,noreferrer');
+        });
+      </script>
+    </body>
+  </html>`;
+  }, []);
+  
+
   /* ---------------------------------------------------------------- */
   /* 3D + AR handlers (START AWAY TIMER HERE)                         */
   /* ---------------------------------------------------------------- */
@@ -279,17 +334,15 @@ const stopAwayAndAccumulate = useCallback(() => {
 
           {mode === "2" ? (
             <div className="flex justify-center">
-              <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
-                <div className="flex justify-center">
-                  <button
-                    onClick={handleOpen3D}
-                    className="rounded-md bg-primary-blue px-8 py-4 text-lg font-semibold text-white hover:bg-gray-800"
-                  >
-                    Open 3D in new window
-                  </button>
-                </div>
-              </div>
+            <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm h-[240px]">
+              <iframe
+                title="Open 3D Launcher"
+                srcDoc={build3DLauncherSrcDoc(get3DViewerUrl())}
+                className="w-full h-full"
+                onMouseDown={() => startAway()} 
+              />
             </div>
+          </div>
           ) : (
             <div className="flex justify-center">
               <div className="mt-8 mb-12 w-[82%] max-w-md overflow-hidden rounded-2xl bg-[#E6E8EA] border border-[#D5D9DD] shadow-sm px-8 py-14">
@@ -304,7 +357,8 @@ const stopAwayAndAccumulate = useCallback(() => {
                     allowFullScreen
                     referrerPolicy="no-referrer-when-downgrade"
                     loading="lazy"
-                    className="w-[350px] h-[130px]"
+                    className="w-full h-[130px]"
+                    //className="w-[350px] h-[130px]"
                   />
                 </div>
               </div>

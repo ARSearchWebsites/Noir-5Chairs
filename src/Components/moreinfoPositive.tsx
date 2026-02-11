@@ -9,6 +9,8 @@ import { db } from '../services/firebase';
 import { Product } from '../types/types';
 
 const MoreinfoPositive: React.FC = () => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: window.location.href, title: 'MoreInfo Page' });
   }, []);
