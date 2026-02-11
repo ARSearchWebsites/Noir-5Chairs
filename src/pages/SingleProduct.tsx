@@ -32,11 +32,11 @@ const SingleProduct: React.FC = () => {
   // ------------------------------
 // AWAY TIME (product-aware)
 // ------------------------------
-const AWAY_CTX_KEY = "singleProduct_awayCtx"; // JSON: { productId, productName, startedAt }
-const AWAY_TOTAL_ALL_KEY = "singleProduct_awayTotalSeconds_all";
+const AWAY_CTX_KEY = "timeSpentAwayCtx"; // JSON: { productId, productName, startedAt }
+const AWAY_TOTAL_ALL_KEY = "timeSpentAway_all";
 
 const getAwayTotalKeyForProduct = (productName: string) =>
-  `singleProduct_awayTotalSeconds_${productName}`;
+  `timeSpentAway_${productName}`;
 
 const startAway = useCallback(() => {
   if (!product) return;
@@ -292,21 +292,6 @@ const stopAwayAndAccumulate = useCallback(() => {
   }, []);
   
 
-  /* ---------------------------------------------------------------- */
-  /* 3D + AR handlers (START AWAY TIMER HERE)                         */
-  /* ---------------------------------------------------------------- */
-  const handleOpen3D = useCallback(() => {
-    if (!product?.src) return;
-
-    startAway();
-
-    const url =
-      `${window.location.origin}/3dviewer` +
-      `?src=${encodeURIComponent(product.src)}` +
-      `&name=${encodeURIComponent(product.product_name)}`;
-
-    window.open(url, "_blank", "noopener,noreferrer");
-  }, [product, startAway]);
 
   
 

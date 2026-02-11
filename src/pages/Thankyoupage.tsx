@@ -33,7 +33,7 @@ const ThankYouPage: React.FC = () => {
       key.startsWith("timeSpentOnSingleProductPage") ||
       key.startsWith("timeSpentOnProductDetailsPage") ||
       key === "timeSpentOnHomePage" ||
-      key.startsWith("singleProduct_awayTotalSeconds");
+      key.startsWith("timeSpentAway_");
 
     Object.keys(sessionStorage).forEach((key) => {
       const raw = sessionStorage.getItem(key);
@@ -46,8 +46,8 @@ const ThankYouPage: React.FC = () => {
 
         // Sum per-product away keys (exclude the convenience "_all" key to avoid double count)
         if (
-          key.startsWith("singleProduct_awayTotalSeconds_") &&
-          key !== "singleProduct_awayTotalSeconds_all"
+          key.startsWith("timeSpentAway_") &&
+          key !== "timeSpentAway_all"
         ) {
           totalAwaySingleAcrossProducts += val;
         }
@@ -79,7 +79,7 @@ const ThankYouPage: React.FC = () => {
 
     // Optional: also store the precomputed "_all" key (if present)
     data.totalAwayTimeOnSingleProductPage_allKey = Number(
-      sessionStorage.getItem("singleProduct_awayTotalSeconds_all") ?? "0"
+      sessionStorage.getItem("timeSpentAway_all") ?? "0"
     );
 
     // Store URL params too (optional but helpful)

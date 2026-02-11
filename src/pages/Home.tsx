@@ -1,36 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import HeroSection from "../Components/LandingPage";
 import ProductList from "../Components/ProductList";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-//import { doc, setDoc, arrayUnion } from "@firebase/firestore";
-//import { db } from "../services/firebase";
 
 interface HomeProps {
   forwardedRef?: React.Ref<HTMLDivElement>;
 }
 
 const Home: React.FC<HomeProps> = ({ forwardedRef }) => {
-  const params  = new URLSearchParams(window.location.search);
-  const userId  = params.get("userId") ?? "";
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get("userId") ?? "";
 
-  const [pageStart, setPageStart]   = useState<number>(0);
-  const [initial,   setInitial]     = useState<number>(0);
-
+  // Use refs so we don't trigger effect re-runs and we avoid the "pageStart = 0" cleanup bug.
+  const pageStartRef = useRef<number>(0);
+  const initialRef = useRef<number>(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    setInitial(Number(sessionStorage.getItem("timeSpentOnHomePage") ?? "0"));
-    setPageStart(Date.now());
-  }, []);
+    // Read previous accumulated time (if any)
+    initialRef.current = Number(sessionStorage.getItem("timeSpentOnHomePage") ?? "0") || 0;
 
-  useEffect(() => {
+    // Mark page enter time
+    pageStartRef.current = Date.now();
+
+    // Only write on unmount
     return () => {
-      const elapsed = (Date.now() - pageStart) / 1_000;
-      sessionStorage.setItem("timeSpentOnHomePage", String(initial + elapsed));
+      const elapsed = (Date.now() - pageStartRef.current) / 1_000;
+      const total = initialRef.current + elapsed;
+
+      sessionStorage.setItem("timeSpentOnHomePage", String(total));
     };
-  }, [pageStart, initial]);
+  }, []);
 
   return (
     <>
