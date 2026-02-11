@@ -42,7 +42,9 @@ const ThankYouPage: React.FC = () => {
         const val = Number(raw ?? "0") || 0;
 
         if (key.startsWith("timeSpentOnSingleProductPage")) totalSingle += val;
-        if (key.startsWith("timeSpentOnProductDetailsPage")) totalDetails += val;
+        if (key.startsWith("timeSpentOnProductDetailsPage")) {
+          if (key !== "timeSpentOnProductDetailsPage_all") totalDetails += val;
+        }
 
         // Sum per-product away keys (exclude the convenience "_all" key to avoid double count)
         if (
