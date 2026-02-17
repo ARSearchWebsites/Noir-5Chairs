@@ -69,10 +69,10 @@ const MoreinfoPositive: React.FC = () => {
 
   /* ---------- feature accordion state ---------- */
   const [open, setOpen] = useState({
-    material: false,
+    upholstery: false,
     backrest: false,
     seat: false,
-    safety: false,
+    armrests: false,
   });
 
   const toggle = (key: keyof typeof open) =>
@@ -116,15 +116,15 @@ const MoreinfoPositive: React.FC = () => {
         </h1>
 
         <FeatureBlock
-          title="Material: Metal"
-          open={open.material}
+          title="Upholstery: Premium padding"
+          open={open.upholstery}
           toggle={() => {
-            toggle("material");
-            logFeature("Material");
+            toggle("upholstery");
+            logFeature("Upholstery");
           }}
         >
-          The {product.product_name} is made from high-quality metal, ensuring
-          enhanced stability and durability.
+          The {product.product_name} offers a breathable, premium upholstery with
+          additional padding for superior seating comfort and durability.
         </FeatureBlock>
 
         <FeatureBlock
@@ -140,27 +140,28 @@ const MoreinfoPositive: React.FC = () => {
         </FeatureBlock>
 
         <FeatureBlock
-          title="Adjustable Seat Height: Included"
+          title="Adjustable seat height: 10 levels"
           open={open.seat}
           toggle={() => {
             toggle("seat");
-            logFeature("Adjustable Seat Height");
+            logFeature("Adjustable seat height");
           }}
         >
-          The {product.product_name} allows for adjustable seat height to suit
-          different body heights.
+          The {product.product_name} features a 10-level adjustable seat height,
+          allowing you to customize the chair to your individual height and
+          seating preferences for optimal comfort.
         </FeatureBlock>
 
         <FeatureBlock
-          title="Safety Feature: Included"
-          open={open.safety}
+          title="Armrests: Adjustable and padded"
+          open={open.armrests}
           toggle={() => {
-            toggle("safety");
-            logFeature("Safety Feature");
+            toggle("armrests");
+            logFeature("Armrests");
           }}
         >
-          A safety mechanism locks the wheels when the chair is unoccupied, keeping
-          it securely in place.
+          The {product.product_name} includes height-adjustable, padded armrests
+          for enhanced comfort and ergonomic support.
         </FeatureBlock>
       </main>
 

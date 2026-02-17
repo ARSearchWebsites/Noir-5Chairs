@@ -15,7 +15,7 @@ const product_card: readonly Product[] = [
   {
     id: 1,
     product_name: "Noir Atlas",
-    price: "from $89.99",
+    price: "$119.99",
     farbe: "Black",
     currency: "EURO",
     thumb: "./images/image2_atlas.png",
@@ -25,7 +25,7 @@ const product_card: readonly Product[] = [
   {
     id: 2,
     product_name: "Noir Sierra",
-    price: "from $89.99",
+    price: "$119.99",
     farbe: "Gray",
     currency: "EURO",
     thumb: "./images/image3_sierra.png",
@@ -35,7 +35,7 @@ const product_card: readonly Product[] = [
   {
     id: 3,
     product_name: "Noir Andes",
-    price: "from $89.99",
+    price: "$119.99",
     farbe: "Black",
     currency: "EURO",
     thumb: "./images/image4_andes.png",
@@ -45,7 +45,7 @@ const product_card: readonly Product[] = [
   {
     id: 4,
     product_name: "Noir Acadia",
-    price: "from $89.99",
+    price: "$119.99",
     farbe: "Gray",
     currency: "EURO",
     thumb: "./images/image5_acadia.png",
@@ -55,7 +55,7 @@ const product_card: readonly Product[] = [
   {
     id: 5,
     product_name: "Noir Savanna",
-    price: "from $89.99",
+    price: "$119.99",
     farbe: "Brown",
     currency: "EURO",
     thumb: "./images/image6_savanna.png",

@@ -69,10 +69,10 @@ const MoreinfoNegative: React.FC = () => {
 
   /* ---------- feature accordion state ---------- */
   const [open, setOpen] = useState({
-    material: false,
+    upholstery: false,
     backrest: false,
     seat: false,
-    safety: false,
+    armrests: false,
   });
 
   const toggle = (key: keyof typeof open) =>
@@ -116,14 +116,14 @@ const MoreinfoNegative: React.FC = () => {
         </h1>
 
         <FeatureBlock
-          title="Material: Plastic"
-          open={open.material}
+          title="Upholstery: Synthetic"
+          open={open.upholstery}
           toggle={() => {
-            toggle("material");
-            logFeature("Material");
+            toggle("upholstery");
+            logFeature("Upholstery");
           }}
         >
-          The {product.product_name} is made from standard plastic.
+          The {product.product_name} includes synthetic fabric upholstery.
         </FeatureBlock>
 
         <FeatureBlock
@@ -138,26 +138,27 @@ const MoreinfoNegative: React.FC = () => {
         </FeatureBlock>
 
         <FeatureBlock
-          title="Adjustable Seat Height: Not included"
+          title="Adjustable seat height: 2 levels"
           open={open.seat}
           toggle={() => {
             toggle("seat");
-            logFeature("Adjustable Seat Height");
+            logFeature("Adjustable seat height");
           }}
         >
-          The {product.product_name} does not offer adjustable seat height.
+          The {product.product_name} features a 2-level adjustable seat height to
+          fit standard heights.
         </FeatureBlock>
 
         <FeatureBlock
-          title="Safety Feature: Not included"
-          open={open.safety}
+          title="Armrests: Fixed and plastic"
+          open={open.armrests}
           toggle={() => {
-            toggle("safety");
-            logFeature("Safety Feature");
+            toggle("armrests");
+            logFeature("Armrests");
           }}
         >
-          The {product.product_name} does not include a safety mechanism (e.g.,
-          wheel lock).
+          The {product.product_name} includes non-adjustable armrests made of
+          standard plastic.
         </FeatureBlock>
       </main>
 

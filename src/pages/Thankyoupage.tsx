@@ -96,12 +96,14 @@ const ThankYouPage: React.FC = () => {
   const getSurveyLink = (): string | null => {
     const map: Record<string, Record<string, string>> = {
       "1": {
-        true: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_9KqiwjwTldUzzTg",
-        false: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_6MapWG93aPGf6vk",
+        // AR mode
+        true: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_0OqBO3hr3bGC9pk",
+        false: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_1FlxXrNGSyDPaqa",
       },
       "2": {
-        true: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_8B9rcM6t3RSO3Fc",
-        false: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_dbPKlLmNV1dv7AG",
+        // 3D mode
+        true: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_2awqh8xDoA5tnZc",
+        false: "https://unikoelnwiso.eu.qualtrics.com/jfe/form/SV_1H5q9OYYqBuNPiS",
       },
     };
 

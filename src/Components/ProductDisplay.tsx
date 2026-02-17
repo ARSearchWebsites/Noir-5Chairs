@@ -53,7 +53,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
 
       <div className="space-y-4 items-center text-[25px] font-fira-sans mb-10 mt-10">
         {[
-          { label: 'Price: $89.99', key: 'price' },
+          { label: 'Price: $119.99', key: 'price' },
           { label: `Color: ${product.farbe}`, key: 'color' },
         ].map(({ label, key }) => (
           <li
