@@ -334,7 +334,7 @@ const stopAwayAndAccumulate = useCallback(() => {
                 <div className="flex flex-col items-center gap-4">
                   
                   <iframe
-                    src={`https://ar-chair-viewer-a56s.vercel.app/?model=${encodeURIComponent(
+                    src={`https://ar-chair-viewer-three.vercel.app/?model=${encodeURIComponent(
                       product.sku
                     )}`}
                     title="AR Chair Viewer"
